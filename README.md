@@ -1,2 +1,2 @@
 ### 文章列表
-[issues](https://github.com/ICKelin/article/issues)
+[加速器的一些理解](https://github.com/ICKelin/article/issues/new)
