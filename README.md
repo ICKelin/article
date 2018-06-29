@@ -8,3 +8,5 @@
 [Tun/Tap设备基本原理](https://github.com/ICKelin/article/issues/9)
 
 [IPV6访问环境搭建，公网与内网](https://github.com/ICKelin/article/issues/8)
+
+[一个非常简洁的内网实现](https://github.com/ICKelin/article/issues/10)
