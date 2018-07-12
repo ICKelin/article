@@ -9,4 +9,4 @@
 
 [IPV6访问环境搭建，公网与内网](https://github.com/ICKelin/article/issues/8)
 
-[一个非常简洁的内网实现](https://github.com/ICKelin/article/issues/10)
+[一个非常简洁的内网穿透实现](https://github.com/ICKelin/article/issues/10)
