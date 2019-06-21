@@ -20,3 +20,5 @@
 10. [一个l7vpn的设想](https://github.com/ICKelin/article/issues/18)
 
 11. [Notr用户数量破百](https://github.com/ICKelin/article/issues/19)
+
+12. [基于CoreDNS和etcd实现动态域名解析](https://github.com/ICKelin/article/issues/20)
