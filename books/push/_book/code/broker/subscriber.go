@@ -1,9 +1,11 @@
 package broker
 
+import "fmt"
+
 var DefaultManager = NewSubManager()
 
 type Subscriber struct {
-	UserId  int64
+	Id      int64
 	Channel chan *PushMsg
 }
 
@@ -30,11 +32,11 @@ func (sm *SubManager) Get(id int64) *Subscriber {
 }
 
 func (sm *SubManager) Broadcast(msg *PushMsg) {
-	for userid, s := range sm.subscribers {
+	for id, s := range sm.subscribers {
 		select {
 		case s.Channel <- msg:
 		default:
-			fmt.Printf("userid %d channel full, channel size: %d\n", userid, len(s.Channel))
+			fmt.Printf("subscriber[%d] channel full, channel size: %d\n", id, len(s.Channel))
 		}
 	}
 }

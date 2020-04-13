@@ -40,7 +40,7 @@ func (b *Broker) Subscribe(topic *Topic, sub *Subscriber) {
 		b.Routes[key] = subMgr
 	}
 
-	subMgr.Add(sub.UserId, sub)
+	subMgr.Add(sub.Id, sub)
 }
 
 func (b *Broker) Unsubscribe(topic *Topic, sub *Subscriber) {
@@ -50,6 +50,6 @@ func (b *Broker) Unsubscribe(topic *Topic, sub *Subscriber) {
 
 	subMgr := b.Routes[key]
 	if subMgr != nil {
-		subMgr.Del(sub.UserId)
+		subMgr.Del(sub.Id)
 	}
 }

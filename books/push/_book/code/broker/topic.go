@@ -1,7 +1,5 @@
 package broker
 
-import "fmt"
-
 type Topic struct {
 	Key string
 }
