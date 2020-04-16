@@ -17,6 +17,18 @@
     
             
                 
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-toggle-chapters/toggle.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-codeblock-filename/block.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-code/plugin.css">
+                
+            
+                
                 <link rel="stylesheet" href="../gitbook/gitbook-plugin-highlight/website.css">
                 
             
@@ -226,6 +238,195 @@
                                 <section class="normal markdown-section">
                                 
                                 <h1 id="&#x57FA;&#x4E8E;grpc&#x7684;&#x63A8;&#x9001;">&#x57FA;&#x4E8E;grpc&#x7684;&#x63A8;&#x9001;</h1>
+<h2 id="grpc">grpc</h2>
+<p><img src="https://grpc.io/img/landing-2.svg" alt=""></p>
+<p>grpc&#x662F;&#x6211;&#x5728;&#x5DE5;&#x4F5C;&#x5F53;&#x4E2D;&#x5E7F;&#x6CDB;&#x7528;&#x5230;&#x7684;&#x4E00;&#x4E2A;rpc&#x6846;&#x67B6;&#xFF0C;&#x7531;&#x4E8E;&#x516C;&#x53F8;&#x5185;&#x90E8;&#x91C7;&#x7528;&#x5FAE;&#x670D;&#x52A1;&#x67B6;&#x6784;&#xFF0C;&#x670D;&#x52A1;&#x4E4B;&#x95F4;&#x4EA4;&#x4E92;&#x4F7F;&#x7528;&#x7684;&#x5C31;&#x662F;grpc&#x6846;&#x67B6;&#xFF0C;grpc&#x662F;&#x4E00;&#x4E2A;&#x6846;&#x67B6;&#xFF0C;&#x6574;&#x5408;&#x4E86;http2&#xFF0C;protobuf&#x7B49;&#x6280;&#x672F;&#xFF0C;&#x6574;&#x51FA;&#x4E86;&#x4E00;&#x5957;&#x5BF9;&#x5F00;&#x53D1;&#x4EBA;&#x5458;&#x76F8;&#x5BF9;&#x6BD4;&#x8F83;&#x53CB;&#x597D;&#x7684;&#x6846;&#x67B6;&#x3002;</p>
+<p>grpc&#x672C;&#x8EAB;&#x4F7F;&#x7528;&#x7279;&#x522B;&#x7B80;&#x5355;&#xFF0C;&#x7B80;&#x5355;&#x5230;&#x4EC0;&#x4E48;&#x7A0B;&#x5EA6;&#x5462;&#xFF1F;&#x7B80;&#x5355;&#x5230;&#x6211;&#x521A;&#x5230;&#x516C;&#x53F8;&#x7684;&#x65F6;&#x5019;&#x53EA;&#x542C;&#x8FC7;grpc&#x662F;&#x4EC0;&#x4E48;&#xFF0C;&#x6478;&#x7D22;&#x4E00;&#x5929;&#x5DE6;&#x53F3;&#x5C31;&#x80FD;&#x5F00;&#x59CB;&#x7528;grpc&#x5199;&#x4E00;&#x4E9B;demo&#xFF0C;&#x7B2C;&#x4E8C;&#x5929;&#x5C31;&#x53EF;&#x4EE5;&#x8FDB;&#x884C;&#x5C0F;&#x529F;&#x80FD;&#x5F00;&#x53D1;&#x3002;</p>
+<p>grpc&#x672C;&#x8EAB;&#x662F;&#x57FA;&#x4E8E;http2&#x7684;&#xFF0C;&#x76F8;&#x6BD4;&#x8F83;http1&#x800C;&#x8A00;&#xFF0C;http2&#x6709;&#x51E0;&#x4E2A;&#x6BD4;&#x8F83;&#x91CD;&#x8981;&#x7684;&#x7684;&#x7279;&#x6027;:</p>
+<p><strong>1. http2&#x91C7;&#x7528;&#x4E8C;&#x8FDB;&#x5236;&#x4F20;&#x8F93;</strong></p>
+<p>&#x901A;&#x5E38;&#x5728;&#x5199;&#x7F51;&#x7EDC;&#x7A0B;&#x5E8F;&#x65F6;&#xFF0C;&#x90FD;&#x4F1A;&#x6709;&#x4E00;&#x4E2A;&#x7F16;&#x89E3;&#x7801;&#x76F8;&#x5173;&#x7684;&#x4EE3;&#x7801;&#xFF0C;http1&#x7684;&#x7F16;&#x89E3;&#x7801;&#x6CA1;&#x6709;&#x592A;&#x591A;&#x89C4;&#x8303;&#xFF0C;&#x53EF;&#x80FD;&#x662F;&#x56E0;&#x4E3A;&#x8BDE;&#x751F;&#x5F97;&#x6BD4;&#x8F83;&#x65E9;&#xFF0C;http1&#x4F20;&#x8F93;&#x4E0D;&#x52A0;&#x5BC6;&#xFF0C;&#x4F20;&#x8F93;&#x5185;&#x5BB9;&#x4E5F;&#x662F;&#x7EAF;&#x6587;&#x672C;&#xFF0C;&#x901A;&#x8FC7;&#x6362;&#x884C;&#x7B26;&#x6765;&#x505A;&#x5206;&#x5272;&#xFF0C;http2&#x5BF9;&#x6B64;&#x6709;&#x6240;&#x6539;&#x8FDB;&#xFF0C;&#x4E0D;&#x5728;&#x91C7;&#x7528;&#x7EAF;&#x6587;&#x672C;&#x7684;&#x65B9;&#x5F0F;&#x8FDB;&#x884C;&#x4F20;&#x8F93;&#xFF0C;&#x800C;&#x91C7;&#x7528;&#x4E8C;&#x8FDB;&#x5236;&#x65B9;&#x5F0F;&#xFF0C;&#x6211;&#x89C9;&#x5F97;&#x53EF;&#x4EE5;&#x7C7B;&#x6BD4;json&#x548C;protobuf&#x4E24;&#x79CD;&#x7F16;&#x89E3;&#x7801;&#x65B9;&#x5F0F;&#x3002;http1&#x7C7B;&#x4F3C;json&#xFF0C;&#x6BD4;&#x8F83;&#x7B80;&#x5355;&#xFF0C;&#x8FD8;&#x5177;&#x6709;&#x53EF;&#x8BFB;&#x6027;&#x3002;&#x3002;&#x3002;http2&#x7C7B;&#x6BD4;protobuf&#xFF0C;&#x62FF;&#x5230;&#x8FD9;&#x4E2A;&#x7F16;&#x7801;&#x540E;&#x7684;&#x6570;&#x636E;&#x5305;&#x770B;&#x4E0D;&#x51FA;&#x6765;&#x5177;&#x4F53;&#x662F;&#x4EC0;&#x4E48;&#xFF0C;&#x9700;&#x8981;&#x7528;protobuf&#x6765;&#x89E3;&#x7801;&#x3002;</p>
+<p><strong>2. &#x591A;&#x8DEF;&#x590D;&#x7528;</strong></p>
+<p><img src="https://github.com/xtaci/smux/raw/master/mux.jpg" alt="">
+<code>&#x56FE;&#x7247;&#x6765;&#x6E90;: https://github.com/xtaci/smux</code></p>
+<p>&#x5728;tcp&#x7684;&#x57FA;&#x7840;&#x4E4B;&#x4E0A;&#x5728;&#x6D89;&#x53CA;&#x4E00;&#x5C42;&#x591A;&#x8DEF;&#x590D;&#x7528;&#x534F;&#x8BAE;&#xFF0C;&#x534F;&#x8BAE;&#x5305;&#x542B;&#x4E00;&#x4E2A;streamID&#x5B57;&#x6BB5;&#xFF0C;&#x901A;&#x8FC7;streamID&#x6765;&#x6807;&#x8BC6;&#x4E00;&#x6761;&#x6D41;&#xFF0C;&#x4ECE;&#x800C;&#x5728;&#x4E00;&#x4E2A;tcp&#x8FDE;&#x63A5;&#x4E4B;&#x4E0A;&#x53D1;&#x8D77;&#x591A;&#x4E2A;&#x8BF7;&#x6C42;-&#x54CD;&#x5E94;&#x3002;&#x591A;&#x8DEF;&#x590D;&#x7528;&#x5E76;&#x6CA1;&#x6709;&#x6539;&#x53D8;http2&#x5E95;&#x5C42;&#x4E00;&#x6761;tcp&#x8FDE;&#x63A5;&#x7684;&#x73B0;&#x8C61;&#xFF0C;&#x4F7F;&#x7528;&#x8005;&#x9762;&#x5411;&#x7684;&#x662F;&#x6D41;&#x800C;&#x4E0D;&#x662F;tcp&#x8FDE;&#x63A5;&#xFF0C;&#x6574;&#x4E2A;&#x5E95;&#x5C42;&#x5BF9;&#x4E8E;&#x4F7F;&#x7528;&#x8005;&#x800C;&#x8A00;&#x662F;&#x900F;&#x660E;&#x7684;&#x3002;</p>
+<p>&#x591A;&#x8DEF;&#x590D;&#x7528;&#x7684;&#x4E00;&#x4E2A;&#x597D;&#x5904;&#x662F;&#x53EF;&#x4EE5;&#x964D;&#x4F4E;tcp&#x4E09;&#x6B21;&#x63E1;&#x624B;&#x548C;&#x56DB;&#x6B21;&#x56DE;&#x6536;&#x9020;&#x6210;&#x7684;&#x5EF6;&#x65F6;&#xFF0C;&#x4E0D;&#x9700;&#x8981;&#x9891;&#x7E41;&#x7684;&#x8FDE;&#x63A5;&#xFF0C;&#x65AD;&#x5F00;</p>
+<p>&#x591A;&#x8DEF;&#x590D;&#x7528;&#x4E0E;http keepalive&#x7684;&#x4E00;&#x5927;&#x540C;&#x70B9;&#x6211;&#x8BA4;&#x4E3A;&#x662F;keepalive&#x867D;&#x7136;&#x4E5F;&#x662F;&#x4E00;&#x6761;&#x8FDE;&#x63A5;&#xFF0C;&#x4F46;&#x662F;&#x6574;&#x4F53;&#x662F;&#x987A;&#x5E8F;&#x7684;&#xFF0C;&#x4E00;&#x4E2A;(&#x8BF7;&#x6C42;-&#x54CD;&#x5E94;)&#x7ED3;&#x675F;&#x4E4B;&#x540E;&#xFF0C;&#x4E0B;&#x4E00;&#x4E2A;(&#x8BF7;&#x6C42;-&#x54CD;&#x5E94;)&#x624D;&#x7EE7;&#x7EED;&#x5DE5;&#x4F5C;&#xFF0C;&#x4E0A;&#x4E00;&#x4E2A;&#x8BF7;&#x6C42;&#x7B49;&#x5F85;&#x54CD;&#x5E94;&#x7684;&#x8FC7;&#x7A0B;&#x662F;&#x88AB;&#x6D6A;&#x8D39;&#x4E86;&#x7684;&#x3002;</p>
+<p>keepalive&#x662F;&#x5355;&#x7EBF;&#x7A0B;&#x5904;&#x7406;&#x591A;&#x4E2A;&#x4EFB;&#x52A1;&#xFF0C;&#x591A;&#x8DEF;&#x590D;&#x7528;&#x662F;&#x591A;&#x7EBF;&#x7A0B;&#x5904;&#x7406;&#x591A;&#x4E2A;&#x4EFB;&#x52A1;&#x3002;</p>
+<p><strong>3. &#x670D;&#x52A1;&#x7AEF;&#x63A8;&#x9001;</strong></p>
+<p>http2&#x4ECD;&#x7136;&#x9700;&#x8981;&#x5BA2;&#x6237;&#x7AEF;&#x53D1;&#x8D77;&#x8FDE;&#x63A5;&#xFF0C;&#x8FDE;&#x63A5;&#x6210;&#x529F;&#x4E4B;&#x540E;&#x53D1;&#x8D77;&#x8BF7;&#x6C42;&#xFF0C;&#x4F46;&#x662F;&#x5141;&#x8BB8;&#x670D;&#x52A1;&#x7AEF;&#x8FD4;&#x56DE;&#x591A;&#x4E2A;&#x54CD;&#x5E94;&#xFF0C;&#x4ECE;&#x7F51;&#x7EDC;&#x5C42;&#x9762;&#x800C;&#x8A00;&#xFF0C;&#x53EA;&#x8981;&#x7F51;&#x7EDC;&#x8FDE;&#x63A5;&#x6CA1;&#x6709;&#x65AD;&#x5F00;&#xFF0C;&#x670D;&#x52A1;&#x7AEF;&#x63A8;&#x9001;&#x5C31;&#x662F;&#x7406;&#x8BBA;&#x4E0A;&#x53EF;&#x884C;&#x7684;&#x4E86;&#xFF0C;http1&#x7684;&#x77ED;&#x8FDE;&#x63A5;&#xFF0C;&#x670D;&#x52A1;&#x7AEF;&#x54CD;&#x5E94;&#x4E00;&#x6B21;&#x4E4B;&#x540E;&#xFF0C;&#x628A;&#x8FDE;&#x63A5;&#x65AD;&#x5F00;&#x4E86;&#xFF0C;&#x8FD9;&#x6837;&#x670D;&#x52A1;&#x7AEF;&#x5C31;&#x6CA1;&#x6709;&#x63A8;&#x9001;&#x7684;&#x80FD;&#x529B;&#x3002;</p>
+<h3 id="grpc&#x7684;&#x51E0;&#x79CD;&#x6A21;&#x5F0F;">grpc&#x7684;&#x51E0;&#x79CD;&#x6A21;&#x5F0F;</h3>
+<p>grpc&#x6709;&#x51E0;&#x79CD;&#x6A21;&#x5F0F;&#xFF0C;&#x6B63;&#x5E38;&#x6A21;&#x5F0F;&#x4E0B;&#xFF0C;grpc&#x5BA2;&#x6237;&#x7AEF;&#x548C;&#x670D;&#x52A1;&#x7AEF;&#x7684;&#x6D41;&#x7A0B;&#x662F;:</p>
+<p>&#x5BA2;&#x6237;&#x7AEF;&#x53D1;&#x8D77;&#x8C03;&#x7528; -&gt; &#x670D;&#x52A1;&#x7AEF;&#x54CD;&#x5E94;&#x8C03;&#x7528;</p>
+<p>&#x4F46;&#x662F;&#x5728;&#x4E00;&#x4E9B;&#x573A;&#x666F;&#x4E0B;&#xFF0C;&#x670D;&#x52A1;&#x7AEF;&#x9700;&#x8981;&#x901A;&#x77E5;&#x5BA2;&#x6237;&#x7AEF;&#xFF0C;grpc&#x4E5F;&#x662F;&#x652F;&#x6301;&#x7684;&#xFF0C;grpc&#x9664;&#x4E86;&#x6B63;&#x5E38;&#x6A21;&#x5F0F;&#x4E4B;&#x5916;&#xFF0C;&#x8FD8;&#x6709;&#x6D41;&#x6A21;&#x5F0F;&#x3002;</p>
+<p>&#x6D41;&#x6A21;&#x5F0F;&#x53EF;&#x4EE5;&#x7C7B;&#x6BD4;tcp&#x957F;&#x8FDE;&#x63A5;&#xFF0C;&#x8C03;&#x7528;&#x4E00;&#x6B21;&#xFF0C;&#x53EF;&#x4EE5;&#x6E90;&#x6E90;&#x4E0D;&#x65AD;&#x7684;&#x4F20;&#x8F93;&#x6570;&#x636E;&#xFF0C;&#x6D41;&#x6A21;&#x5F0F;&#x53C8;&#x6709;&#x4E24;&#x79CD;&#xFF0C;<strong>&#x5355;&#x5411;&#x6D41;</strong>&#x548C;<strong>&#x53CC;&#x5411;&#x6D41;</strong>&#x3002;</p>
+<p>&#x6240;&#x8C13;&#x5355;&#x5411;&#x6D41;&#x5C31;&#x662F;&#x6307;&#x5355;&#x4E2A;&#x65B9;&#x5411;&#x5411;&#x6E90;&#x6E90;&#x4E0D;&#x65AD;&#x7684;&#x4F20;&#x8F93;&#xFF0C;&#x5176;&#x4E2D;&#x5355;&#x5411;&#x6D41;&#x53C8;&#x53EF;&#x4EE5;&#x533A;&#x5206;&#x4E3A;&#x5BA2;&#x6237;&#x7AEF;&#x5355;&#x5411;&#x6D41;&#xFF0C;&#x670D;&#x52A1;&#x7AEF;&#x5355;&#x5411;&#x6D41;&#x3002;&#x5BA2;&#x6237;&#x7AEF;&#x5355;&#x5411;&#x6D41;&#x662F;&#x6307;&#x5BA2;&#x6237;&#x7AEF;&#x8C03;&#x7528;&#x670D;&#x52A1;&#x7AEF;&#x4E4B;&#x540E;&#xFF0C;&#x53EF;&#x4EE5;&#x6E90;&#x6E90;&#x4E0D;&#x65AD;&#x7684;&#x5F80;&#x670D;&#x52A1;&#x7AEF;&#x53D1;&#x9001;&#x6570;&#x636E;&#xFF0C;&#x65B9;&#x5411;&#x53CD;&#x8FC7;&#x6765;&#x5C31;&#x662F;&#x670D;&#x52A1;&#x7AEF;&#x5355;&#x5411;&#x6D41;&#x3002;</p>
+<p>&#x6240;&#x8C13;&#x53CC;&#x5411;&#x6D41;&#x5219;&#x662F;&#x5168;&#x53CC;&#x5DE5;&#xFF0C;&#x5BA2;&#x6237;&#x7AEF;&#x548C;&#x670D;&#x52A1;&#x7AEF;&#x90FD;&#x53EF;&#x4EE5;&#x6E90;&#x6E90;&#x4E0D;&#x65AD;&#x7684;&#x4F20;&#x8F93;&#x6570;&#x636E;&#xFF0C;&#x4E2A;&#x4EBA;&#x89C9;&#x5F97;&#x9664;&#x975E;&#x5BF9;&#x4F20;&#x8F93;&#x6027;&#x80FD;&#x8981;&#x6C42;&#x5F88;&#x9AD8;&#x7684;&#x884C;&#x4E1A;&#xFF0C;&#x6BD4;&#x5982;&#x6E38;&#x620F;&#x4EE5;&#x53CA;&#x7F51;&#x7EDC;&#x7A0B;&#x5E8F;&#xFF0C;&#x5176;&#x4ED6;&#x5927;&#x90E8;&#x5206;&#x573A;&#x666F;&#x90FD;&#x53EF;&#x4EE5;&#x5C1D;&#x8BD5;&#x4F7F;&#x7528;grpc&#x7684;&#x53CC;&#x5411;&#x6D41;&#x4EE3;&#x66FF;tcp&#x957F;&#x8FDE;&#x63A5;&#xFF0C;&#x5E2E;&#x5FD9;&#x89E3;&#x51B3;&#x4E86;&#x5C01;&#x5305;&#x3001;&#x89E3;&#x5305;&#x3001;&#x8FDE;&#x63A5;&#x4FDD;&#x6D3B;&#x3001;&#x65AD;&#x7EBF;&#x91CD;&#x8FDE;&#x7B49;&#x95EE;&#x9898;&#x3002;</p>
+<p>grpc&#x5B9E;&#x65F6;&#x63A8;&#x9001;&#x53EF;&#x4EE5;&#x91C7;&#x7528;&#x670D;&#x52A1;&#x7AEF;&#x5355;&#x5411;&#x6D41;&#x7684;&#x65B9;&#x5F0F;&#x3002;</p>
+<h3 id="&#x57FA;&#x4E8E;grpc-server&#x7AEF;&#x6D41;&#x7684;&#x5B9E;&#x65F6;&#x63A8;&#x9001;">&#x57FA;&#x4E8E;grpc server&#x7AEF;&#x6D41;&#x7684;&#x5B9E;&#x65F6;&#x63A8;&#x9001;</h3>
+<p>&#x524D;&#x9762;&#x5199;&#x4E86;grpc&#x4EE5;&#x53CA;grpc&#x7684;&#x51E0;&#x79CD;&#x6A21;&#x5F0F;&#xFF0C;grpc&#x7528;&#x4E8E;&#x5B9E;&#x65F6;&#x63A8;&#x9001;&#x6B63;&#x662F;&#x4F7F;&#x7528;&#x4E86;grpc&#x7684;server&#x7AEF;&#x5355;&#x5411;&#x6D41;&#x7684;&#x65B9;&#x5F0F;&#xFF0C;&#x901A;&#x8FC7;&#x7F16;&#x5199;&#x975E;&#x5E38;&#x5C11;&#x7684;&#x4EE3;&#x7801;&#x5373;&#x53EF;&#x5B8C;&#x6210;grpc&#x63A8;&#x9001;&#x3002;</p>
+<p><strong>server&#x7AEF;&#x6D41;&#x63A5;&#x53E3;&#x5B9A;&#x4E49;</strong></p>
+<div><p class="code-filename">proto.proto</p></div>
+<pre><code class="lang-protobuf">syntax = &quot;proto3&quot;;
+
+package grpc.push;
+
+option go_package = &quot;/proto&quot;;
+
+message SubscribeReq {
+    repeated string topics = 1;
+}
+
+message SubscribeReply {
+    string topic = 1;
+    string message = 2;
+}
+
+
+service PushService {
+    rpc Subscribe(SubscribeReq) returns (stream SubscribeReply){}
+}
+</code></pre>
+<p><strong>server&#x5B9E;&#x73B0;</strong>&#x4EE3;&#x7801;&#x975E;&#x5E38;&#x77ED;&#xFF0C;&#x4E5F;&#x6BD4;&#x8F83;&#x7B80;&#x5355;&#xFF0C;&#x8FD9;&#x662F;grpc&#x5B9E;&#x73B0;&#x63A8;&#x9001;&#x7684;&#x4E00;&#x5927;&#x4F18;&#x52BF;
+server&#x6536;&#x5230;&#x5BA2;&#x6237;&#x7AEF;&#x8BF7;&#x6C42;&#xFF0C;&#x7136;&#x540E;&#x540E;&#x7EED;&#x6570;&#x636E;&#x901A;&#x8FC7;SendMsg&#x65B9;&#x6CD5;&#x54CD;&#x5E94;&#x56DE;&#x53BB;&#x5373;&#x53EF;</p>
+<div><p class="code-filename">server.go</p></div>
+<pre><code class="lang-golang"><span class="hljs-keyword">package</span> main
+
+<span class="hljs-keyword">import</span> (
+    <span class="hljs-string">&quot;encoding/json&quot;</span>
+    <span class="hljs-string">&quot;flag&quot;</span>
+    <span class="hljs-string">&quot;log&quot;</span>
+    <span class="hljs-string">&quot;net&quot;</span>
+    <span class="hljs-string">&quot;time&quot;</span>
+
+    <span class="hljs-string">&quot;github.com/ICKelin/article/books/code/broker&quot;</span>
+    <span class="hljs-string">&quot;github.com/ICKelin/article/books/code/proto&quot;</span>
+    <span class="hljs-string">&quot;google.golang.org/grpc&quot;</span>
+)
+
+<span class="hljs-keyword">func</span> main() {
+    srv := flag.String(<span class="hljs-string">&quot;l&quot;</span>, <span class="hljs-string">&quot;&quot;</span>, <span class="hljs-string">&quot;local listen addr&quot;</span>)
+    flag.Parse()
+
+    lis, err := net.Listen(<span class="hljs-string">&quot;tcp&quot;</span>, *srv)
+    <span class="hljs-keyword">if</span> err != <span class="hljs-literal">nil</span> {
+        log.Println(err)
+        <span class="hljs-keyword">return</span>
+    }
+    <span class="hljs-keyword">defer</span> lis.Close()
+
+    server := &amp;Server{
+        b: broker.NewBroker(),
+    }
+
+    <span class="hljs-keyword">go</span> cli(server)
+    s := grpc.NewServer()
+    proto.RegisterPushServiceServer(s, server)
+    s.Serve(lis)
+}
+
+<span class="hljs-keyword">type</span> Server <span class="hljs-keyword">struct</span> {
+    b *broker.Broker
+}
+
+<span class="hljs-keyword">func</span> (s *Server) Subscribe(req *proto.SubscribeReq, stream proto.PushService_SubscribeServer) error {
+    sub := &amp;broker.Subscriber{
+        Id:      time.Now().Unix(),
+        Channel: <span class="hljs-built_in">make</span>(<span class="hljs-keyword">chan</span> *broker.PushMsg, <span class="hljs-number">1024</span>),
+    }
+
+    <span class="hljs-keyword">for</span> _, t := <span class="hljs-keyword">range</span> req.Topics {
+        topic := &amp;broker.Topic{
+            Key: t,
+        }
+
+        s.b.Subscribe(topic, sub)
+    }
+
+    <span class="hljs-keyword">for</span> msg := <span class="hljs-keyword">range</span> sub.Channel {
+        data, err := json.Marshal(msg.Data)
+        <span class="hljs-keyword">if</span> err != <span class="hljs-literal">nil</span> {
+            log.Println(err)
+            <span class="hljs-keyword">continue</span>
+        }
+
+        reply := &amp;proto.SubscribeReply{
+            Topic:   msg.Topic.String(),
+            Message: <span class="hljs-keyword">string</span>(data),
+        }
+
+        err = stream.SendMsg(reply)
+        <span class="hljs-keyword">if</span> err != <span class="hljs-literal">nil</span> {
+            log.Println(err)
+            <span class="hljs-keyword">break</span>
+        }
+    }
+
+    <span class="hljs-keyword">return</span> <span class="hljs-literal">nil</span>
+}
+
+<span class="hljs-keyword">func</span> cli(s *Server) {
+    tick := time.NewTicker(time.Second * <span class="hljs-number">3</span>)
+    <span class="hljs-keyword">defer</span> tick.Stop()
+
+    <span class="hljs-keyword">for</span> <span class="hljs-keyword">range</span> tick.C {
+        s.b.Publish(&amp;broker.Topic{
+            <span class="hljs-string">&quot;test-topic&quot;</span>,
+        }, <span class="hljs-string">&quot;publish msg&quot;</span>)
+    }
+}
+</code></pre>
+<p><strong>&#x5BA2;&#x6237;&#x7AEF;&#x5B9E;&#x73B0;</strong>&#x66F4;&#x52A0;&#x7B80;&#x5355;&#xFF0C;&#x5BA2;&#x6237;&#x7AEF;&#x5B9E;&#x73B0;&#x53EA;&#x9700;&#x8981;&#x53D1;&#x8D77;&#x8BF7;&#x6C42;&#xFF0C;&#x7136;&#x540E;&#x5C31;&#x63A5;&#x6570;&#x636E;&#x5C31;&#x884C;&#x4E86;</p>
+<div><p class="code-filename">client.go</p></div>
+<pre><code class="lang-golang"><span class="hljs-keyword">package</span> main
+
+<span class="hljs-keyword">import</span> (
+    <span class="hljs-string">&quot;context&quot;</span>
+    <span class="hljs-string">&quot;flag&quot;</span>
+    <span class="hljs-string">&quot;log&quot;</span>
+
+    <span class="hljs-string">&quot;github.com/ICKelin/article/books/code/proto&quot;</span>
+    <span class="hljs-string">&quot;google.golang.org/grpc&quot;</span>
+)
+
+<span class="hljs-keyword">func</span> main() {
+    srv := flag.String(<span class="hljs-string">&quot;r&quot;</span>, <span class="hljs-string">&quot;&quot;</span>, <span class="hljs-string">&quot;server address&quot;</span>)
+    flag.Parse()
+
+    conn, err := grpc.Dial(*srv, grpc.WithInsecure())
+    <span class="hljs-keyword">if</span> err != <span class="hljs-literal">nil</span> {
+        log.Println(err)
+        <span class="hljs-keyword">return</span>
+    }
+
+    cli := proto.NewPushServiceClient(conn)
+
+    stream, err := cli.Subscribe(context.Background(), &amp;proto.SubscribeReq{
+        Topics: []<span class="hljs-keyword">string</span>{<span class="hljs-string">&quot;test-topic&quot;</span>},
+    })
+    <span class="hljs-keyword">for</span> {
+        msg, err := stream.Recv()
+        <span class="hljs-keyword">if</span> err != <span class="hljs-literal">nil</span> {
+            <span class="hljs-keyword">break</span>
+        }
+
+        log.Println(msg.Topic, msg.Message)
+    }
+}
+</code></pre>
+<h2 id="&#x4F18;&#x7F3A;&#x70B9;&#x5206;&#x6790;">&#x4F18;&#x7F3A;&#x70B9;&#x5206;&#x6790;</h2>
+<p><strong>&#x4F18;&#x70B9;</strong>
+grpc&#x4F7F;&#x7528;&#x6211;&#x5F52;&#x7EB3;&#x4E86;&#x4E0B;&#xFF0C;&#x6709;&#x4EE5;&#x4E0B;&#x51E0;&#x4E2A;&#x4F18;&#x70B9;:</p>
+<ul>
+<li>&#x4EE3;&#x7801;&#x7B80;&#x5355;&#xFF0C;&#x6574;&#x4E2A;&#x63A8;&#x9001;&#x76F8;&#x5173;&#x7684;&#x4EE3;&#x7801;&#x57FA;&#x672C;&#x80FD;&#x63A7;&#x5236;&#x5728;&#x4E24;&#x767E;&#x884C;&#x4EE5;&#x5185;</li>
+<li>&#x5904;&#x7406;&#x7B80;&#x5355;&#xFF0C;&#x4E0D;&#x7528;&#x8003;&#x8651;&#x5C01;&#x5305;&#xFF0C;&#x89E3;&#x5305;&#xFF0C;&#x4E5F;&#x4E0D;&#x7528;&#x8003;&#x8651;&#x65AD;&#x7EBF;&#x91CD;&#x8FDE;&#xFF0C;&#x6846;&#x67B6;&#x5185;&#x90E8;&#x90FD;&#x5E2E;&#x5FD9;&#x505A;&#x597D;&#x4E86;&#x3002;</li>
+<li>&#x6E05;&#x6670;&#xFF0C;&#x4F7F;&#x7528;protobuf&#x6765;&#x4F5C;&#x4E3A;&#x63A5;&#x53E3;&#x5B9A;&#x4E49;&#x4E0E;&#x7F16;&#x89E3;&#x7801;&#x65B9;&#x5F0F;&#xFF0C;&#x975E;&#x5E38;&#x597D;&#x7406;&#x89E3;</li>
+</ul>
+<p>&#x603B;&#x800C;&#x8A00;&#x4E4B;&#xFF0C;easy&#x3002;</p>
+<p><strong>&#x7F3A;&#x70B9;</strong>
+&#x7F3A;&#x70B9;&#x9700;&#x8981;&#x7ED3;&#x5408;&#x5177;&#x4F53;&#x573A;&#x666F;&#x8FDB;&#x884C;&#x5206;&#x6790;&#xFF0C;&#x5982;&#x679C;&#x662F;&#x624B;&#x673A;app&#x6216;&#x8005;&#xFF0C;&#x8003;&#x8651;&#x8017;&#x7535;&#xFF0C;&#x6D41;&#x91CF;&#x662F;&#x5426;&#x5728;&#x53EF;&#x63A5;&#x53D7;&#x8303;&#x56F4;&#x4E4B;&#x5185;&#xFF0C;&#x603B;&#x4E0D;&#x80FD;&#x7528;&#x4E00;&#x4E2A;grpc&#x63A8;&#x9001;&#xFF0C;&#x624B;&#x673A;&#x70ED;&#x7684;&#x53EF;&#x4EE5;&#x70EB;&#x9E21;&#x86CB;&#x6765;&#x5427;&#x3002;</p>
+<h2 id="&#x53C2;&#x8003;&#x94FE;&#x63A5;">&#x53C2;&#x8003;&#x94FE;&#x63A5;</h2>
+<p><a href="https://grpc.io" target="_blank">grpc.io</a></p>
+<p><a href="https://developers.google.com/web/fundamentals/performance/http2?hl=zh-cn" target="_blank">HTTP/2 &#x7B80;&#x4ECB;</a></p>
 
                                 
                                 </section>
@@ -269,7 +470,7 @@
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"基于grpc的推送","level":"1.4","depth":1,"next":{"title":"基于mqtt的推送","level":"1.5","depth":1,"path":"markdown/mqtt.md","ref":"markdown/mqtt.md","articles":[]},"previous":{"title":"基于websocket的推送","level":"1.3","depth":1,"path":"markdown/websocket.md","ref":"markdown/websocket.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["livereload"],"pluginsConfig":{"livereload":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"markdown/grpc.md","mtime":"2020-04-13T13:28:30.654Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-04-13T13:34:45.995Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"基于grpc的推送","level":"1.4","depth":1,"next":{"title":"基于mqtt的推送","level":"1.5","depth":1,"path":"markdown/mqtt.md","ref":"markdown/mqtt.md","articles":[]},"previous":{"title":"基于websocket的推送","level":"1.3","depth":1,"path":"markdown/websocket.md","ref":"markdown/websocket.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["toggle-chapters","codeblock-filename","code","livereload"],"pluginsConfig":{"livereload":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"code":{"copyButtons":true},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"codeblock-filename":{},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"toggle-chapters":{}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"markdown/grpc.md","mtime":"2020-04-16T15:20:36.169Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-04-15T15:32:48.588Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>
@@ -277,6 +478,14 @@
         
     <script src="../gitbook/gitbook.js"></script>
     <script src="../gitbook/theme.js"></script>
+    
+        
+        <script src="../gitbook/gitbook-plugin-toggle-chapters/toggle.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-code/plugin.js"></script>
+        
     
         
         <script src="../gitbook/gitbook-plugin-livereload/plugin.js"></script>

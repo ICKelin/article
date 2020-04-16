@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package grpc.push;
+
+option go_package = "/proto";
+
+message SubscribeReq {
+    repeated string topics = 1;
+}
+
+message SubscribeReply {
+    string topic = 1;
+    string message = 2;
+}
+
+
+service PushService {
+    rpc Subscribe(SubscribeReq) returns (stream SubscribeReply){}
+}
