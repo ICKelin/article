@@ -43,13 +43,21 @@ func (s *Server) Subscribe(req *proto.SubscribeReq, stream proto.PushService_Sub
 		Channel: make(chan *broker.PushMsg, 1024),
 	}
 
+	topics := make([]*broker.Topic, 0)
 	for _, t := range req.Topics {
 		topic := &broker.Topic{
 			Key: t,
 		}
 
 		s.b.Subscribe(topic, sub)
+		topics := append(topics, topic)
 	}
+
+	defer func() {
+		for _, t := range topics {
+			s.b.Unsubscribe(t, sub)
+		}
+	}()
 
 	for msg := range sub.Channel {
 		data, err := json.Marshal(msg.Data)
