@@ -5,6 +5,7 @@ import (
 	"encoding/binary"
 	"fmt"
 	"log"
+	"math"
 	"net"
 	"sync"
 	"sync/atomic"
@@ -18,10 +19,11 @@ const (
 )
 
 var (
-	cmdSize  = 1
-	seqSize  = 2
-	overHead = cmdSize + seqSize
-	errAgain = fmt.Errorf("EAGAIN")
+	cmdSize    = 1
+	seqSize    = 4
+	overHead   = cmdSize + seqSize
+	defaultRto = time.Millisecond * 100
+	errAgain   = fmt.Errorf("EAGAIN")
 )
 
 type segment struct {
@@ -55,6 +57,11 @@ type Sw struct {
 	// mss，超过mss则进行分片
 	mss int
 
+	// rtt采样，微妙级别
+	rtt    int64
+	minrtt int64
+	maxrtt int64
+
 	// 超时计时器
 	timer *time.Timer
 }
@@ -65,8 +72,11 @@ func NewSw(conn *net.UDPConn) *Sw {
 		rcvbuf:   list.New(),
 		recvAck:  make(chan struct{}),
 		recvPush: make(chan struct{}),
-		timer:    time.NewTimer(time.Millisecond * 100),
+		timer:    time.NewTimer(defaultRto),
 		mss:      1400,
+		rtt:      0,
+		minrtt:   math.MaxInt64,
+		maxrtt:   math.MinInt64,
 	}
 	go sw.read()
 	return sw
@@ -126,11 +136,25 @@ func (sw *Sw) sendFragment(data []byte, raddr *net.UDPAddr) {
 	}
 	sw.tx(seg)
 
-	sw.timer.Reset(time.Millisecond * 100)
+	beg := time.Now()
+	sw.timer.Reset(defaultRto)
 	for {
 		select {
 		// 死等ack
 		case <-sw.recvAck:
+			rtt := time.Now().Sub(beg).Microseconds()
+			sw.rtt = rtt
+			if rtt < sw.minrtt {
+				sw.minrtt = rtt
+			}
+
+			if rtt > sw.maxrtt {
+				sw.maxrtt = rtt
+			}
+
+			log.Printf("[D] rtt %d minrtt: %d maxrtt: %d\n",
+				sw.rtt, sw.minrtt, sw.maxrtt)
+
 			sw.timer.Stop()
 			atomic.AddUint32(&sw.nextSeq, 1)
 			return
@@ -139,7 +163,7 @@ func (sw *Sw) sendFragment(data []byte, raddr *net.UDPAddr) {
 		case <-sw.timer.C:
 			log.Println("resend ", seg.seq)
 			sw.tx(seg)
-			sw.timer.Reset(time.Millisecond * 100)
+			sw.timer.Reset(defaultRto)
 		}
 	}
 }
