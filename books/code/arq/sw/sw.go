@@ -1,4 +1,4 @@
-package arq
+package sw
 
 import (
 	"container/list"
@@ -180,7 +180,21 @@ func (sw *Sw) read() error {
 			log.Println("[D] receive ack")
 			sw.recvAck <- struct{}{}
 		} else {
-			if seg.seq != sw.expectSeq {
+			if seg.seq > sw.expectSeq {
+				fmt.Printf("expected %d,got %d\n", sw.expectSeq, seg.seq)
+				continue
+			}
+
+			// 延迟包
+			// 延迟包依旧需要确认
+			// ack不设置确认机制，ack丢失时，会永远收不到数据包
+			if seg.seq < sw.expectSeq {
+				log.Println("[D] receive delay seg")
+				// 响应ack
+				sw.tx(segment{
+					cmd:   cmdAck,
+					raddr: seg.raddr,
+				})
 				continue
 			}
 
@@ -242,5 +256,6 @@ func (sw *Sw) rx() (segment, error) {
 		data:  buf[cmdSize+seqSize : nr],
 		raddr: raddr,
 	}
+	fmt.Println(buf[:nr])
 	return seg, nil
 }
