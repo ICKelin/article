@@ -17,12 +17,13 @@ const (
 )
 
 var (
-	cmdSize    = 1
-	seqSize    = 4
-	overHead   = cmdSize + seqSize
-	defaultRto = time.Millisecond * 100
-	errAgain   = fmt.Errorf("EAGAIN")
-	defaultWnd = uint32(1024)
+	cmdSize      = 1
+	seqSize      = 4
+	overHead     = cmdSize + seqSize
+	defaultRto   = time.Millisecond * 100
+	defaultDelay = int64(300) // 默认30ms延迟ack
+	errAgain     = fmt.Errorf("EAGAIN")
+	defaultWnd   = uint32(1024)
 )
 
 type Gbn struct {
@@ -85,7 +86,12 @@ type segment struct {
 	raddr *net.UDPAddr
 }
 
-func NewGbn(conn *net.UDPConn) *Gbn {
+func NewGbn(conn *net.UDPConn, nodelay bool) *Gbn {
+	delayAck := defaultDelay
+	if nodelay {
+		delayAck = 0
+	}
+
 	gbn := &Gbn{
 		conn:     conn,
 		rcvbuf:   list.New(),
@@ -93,8 +99,9 @@ func NewGbn(conn *net.UDPConn) *Gbn {
 		sndwnd:   defaultWnd,
 		availwnd: defaultWnd,
 		rto:      defaultRto,
-		timer:    time.NewTimer(time.Millisecond * 100),
+		timer:    time.NewTimer(defaultRto),
 		mss:      1400,
+		delayAck: delayAck,
 	}
 
 	go gbn.read()
@@ -102,7 +109,7 @@ func NewGbn(conn *net.UDPConn) *Gbn {
 	return gbn
 }
 
-func (gbn *Gbn) Peek() ([]byte, error) {
+func (gbn *Gbn) Peek() ([]byte, *net.UDPAddr, error) {
 	gbn.rcvMu.Lock()
 
 	if gbn.rcvbuf.Len() > 0 {
@@ -110,7 +117,7 @@ func (gbn *Gbn) Peek() ([]byte, error) {
 		seg := ele.Value.(segment)
 		gbn.rcvbuf.Remove(ele)
 		gbn.rcvMu.Unlock()
-		return seg.data, nil
+		return seg.data, seg.raddr, nil
 	}
 	gbn.rcvMu.Unlock()
 
@@ -122,12 +129,12 @@ func (gbn *Gbn) Peek() ([]byte, error) {
 			seg := ele.Value.(segment)
 			gbn.rcvbuf.Remove(ele)
 			gbn.rcvMu.Unlock()
-			return seg.data, nil
+			return seg.data, seg.raddr, nil
 		}
 		gbn.rcvMu.Unlock()
 	}
 
-	return nil, errAgain
+	return nil, nil, errAgain
 }
 
 func (gbn *Gbn) Send(data []byte, raddr *net.UDPAddr) {
@@ -185,7 +192,12 @@ func (gbn *Gbn) read() error {
 			return err
 		}
 
-		if seg.cmd == cmdAck { // ack包
+		// ack包
+		if seg.cmd == cmdAck {
+			if seg.seq < gbn.sndBase {
+				continue
+			}
+
 			log.Println("[D] receive ack: ", seg.seq)
 			gbn.locker.Lock()
 			// 调整可用窗口
@@ -193,7 +205,9 @@ func (gbn *Gbn) read() error {
 			// 移动sndbase
 			moveSize := seg.seq - gbn.sndBase + 1
 			gbn.sndBase = seg.seq + 1
-
+			if moveSize > 0 {
+				log.Printf("[D] wnd move %d\n", moveSize)
+			}
 			// 移动窗口
 			if len(gbn.sndbuf) > int(moveSize) {
 				gbn.sndbuf = gbn.sndbuf[moveSize:]
@@ -206,7 +220,16 @@ func (gbn *Gbn) read() error {
 		} else {
 			// 丢弃乱序包
 			if seg.seq != gbn.expectSeq {
-				fmt.Println(seg.seq, gbn.expectSeq)
+				fmt.Println("drop ", seg.seq, gbn.expectSeq)
+				if gbn.expectSeq > 0 {
+					// 响应ack
+					gbn.tx(segment{
+						cmd:   cmdAck,
+						seq:   gbn.expectSeq - 1,
+						raddr: seg.raddr,
+					})
+					gbn.lastAck = time.Now()
+				}
 				continue
 			}
 
@@ -217,7 +240,8 @@ func (gbn *Gbn) read() error {
 			ack := true
 			// 延迟ack
 			if gbn.delayAck > 0 {
-				if time.Now().Sub(gbn.lastAck).Microseconds() < gbn.delayAck {
+				diff := time.Now().Sub(gbn.lastAck).Milliseconds()
+				if diff < gbn.delayAck {
 					ack = false
 				}
 			}
@@ -229,6 +253,7 @@ func (gbn *Gbn) read() error {
 					seq:   seg.seq,
 					raddr: seg.raddr,
 				})
+				gbn.lastAck = time.Now()
 			}
 			// 通知上层收包
 			select {

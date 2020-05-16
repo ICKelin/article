@@ -3,6 +3,8 @@ package main
 import (
 	"fmt"
 	"net"
+	"sync/atomic"
+	"time"
 
 	"github.com/ICKelin/article/books/code/arq/gbn"
 )
@@ -16,14 +18,23 @@ func main() {
 
 	defer lis.Close()
 
-	sws := gbn.NewGbn(lis)
-
+	sws := gbn.NewGbn(lis, false)
+	count := int32(0)
 	go func() {
 		for {
-			buf, _ := sws.Peek()
-			fmt.Println(string(buf))
+			buf, raddr, _ := sws.Peek()
+			fmt.Println("recv", string(buf))
+			atomic.AddInt32(&count, 1)
+			sws.Send(buf, raddr)
+			fmt.Println("send ", string(buf))
 		}
 	}()
+
+	tick := time.NewTimer(time.Second * 10)
+	defer tick.Stop()
+	for range tick.C {
+		fmt.Println("receive count: ", count)
+	}
 
 	select {}
 }
