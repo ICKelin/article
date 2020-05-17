@@ -4,14 +4,16 @@ import (
 	"fmt"
 	"log"
 	"net"
-	"sync/atomic"
-	"time"
 
 	"github.com/ICKelin/article/books/code/arq/sw"
 )
 
-func main() {
-	log.SetFlags(log.LstdFlags | log.Ltime | log.Lshortfile | log.Lmicroseconds)
+type server struct {
+	sws      *sw.Sw
+	peerAddr *net.UDPAddr
+}
+
+func (s *server) listenAndServe() {
 	laddr, _ := net.ResolveUDPAddr("udp", ":5013")
 	lis, err := net.ListenUDP("udp", laddr)
 	if err != nil {
@@ -20,27 +22,56 @@ func main() {
 
 	defer lis.Close()
 
-	sws := sw.NewSw(lis)
-	count := int32(0)
-	go func() {
-		for {
-			buf, raddr, err := sws.Peek()
+	sws := sw.NewSw(
+		func(buf []byte) {
+			_, err := lis.WriteTo(buf, s.peerAddr)
 			if err != nil {
+				fmt.Println(err)
+			}
+		})
+
+	s.sws = sws
+
+	go func() {
+		buf := make([]byte, 2048)
+		for {
+			nr, raddr, err := lis.ReadFromUDP(buf)
+			if err != nil {
+				fmt.Println(err)
+				break
+			}
+
+			if s.peerAddr == nil {
+				s.peerAddr = raddr
+			}
+
+			if s.peerAddr.String() != raddr.String() {
+				fmt.Println("not match client")
 				continue
 			}
 
-			fmt.Println("recv ", string(buf))
-			atomic.AddInt32(&count, 1)
-			fmt.Println("send ", string(buf))
-			sws.Send(buf, raddr)
+			sws.Input(buf[:nr])
 		}
 	}()
 
-	tick := time.NewTimer(time.Second * 10)
-	defer tick.Stop()
-	for range tick.C {
-		fmt.Println("receive count: ", count)
-	}
+	for {
+		buf, err := sws.RecvFrom()
+		if err != nil {
+			fmt.Println(err)
+			continue
+		}
 
+		fmt.Println("server recv from: ", string(buf))
+		sws.Output(buf)
+	}
+}
+
+func (s *server) read(buf []byte) {
+}
+
+func main() {
+	log.SetFlags(log.LstdFlags | log.Ltime | log.Lshortfile | log.Lmicroseconds)
+	s := &server{}
+	s.listenAndServe()
 	select {}
 }
