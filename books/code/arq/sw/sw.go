@@ -22,7 +22,7 @@ var (
 	cmdSize    = 1
 	seqSize    = 4
 	overHead   = cmdSize + seqSize
-	defaultRto = time.Millisecond * 100
+	defaultRto = time.Millisecond * 1000
 	errAgain   = fmt.Errorf("EAGAIN")
 )
 
@@ -34,31 +34,49 @@ type segment struct {
 	raddr *net.UDPAddr
 }
 
+type writeReq struct {
+	seg segment
+	fin chan struct{}
+}
+
+type ackReq struct {
+	seg segment
+	fin chan struct{}
+}
+
 type Sw struct {
 	conn *net.UDPConn
 
+	// 发送缓冲区，nonbuf
+	// 每次只允许发送一个segment
+	// 只有上一个segment确认之后，才会发送下一个segment
+	sndMu  sync.Mutex
+	sndbuf chan *writeReq
+
 	// 接收缓冲区
-	rcvMu  sync.Mutex
-	rcvbuf *list.List
+	// 上层每次从rcvbuf当中取出数据
+	rcvMu        sync.Mutex
+	rcvPushEvent chan struct{}
+	rcvbuf       *list.List
 
-	// 收到ack事件
-	recvAck chan struct{}
+	// 上层交付函数, TODO://
+	deliveryFunc func([]byte, *net.UDPAddr)
 
-	// 收到push事件
-	recvPush chan struct{}
+	// 收到ack 序列号
+	recvAck chan *ackReq
 
 	// 当前发送序列号
 	// 首次收到确认之后,sndSeq+1
 	sndSeq uint32
 
-	// 上收到的序列号
-	// 如果收到的序列号 < lastSeq，程序bug
-	// 如果收到的序列号 = lastSeq，视为重传包，需要进行确认
-	// 如果收到的序列号 = lastSeq+1，视为有效包，需要进行确认并往上层投递
-	// 如果收到的序列号 > lastSeq + 1，程序bug
-	lastSeq uint32
+	// 上次收到的序列号
+	// 如果收到的序列号 < latestSeq，程序bug
+	// 如果收到的序列号 = latestSeq，视为重传包，需要进行确认
+	// 如果收到的序列号 = latestSeq + 1，视为有效包，需要进行确认并往上层投递
+	// 如果收到的序列号 > latestSeq + 1，程序bug
+	latestSeq uint32
 
-	// mss，超过mss则进行分片
+	// mss，超过mss进行分片
 	mss int
 
 	// 重传计时时间
@@ -66,7 +84,8 @@ type Sw struct {
 	// 每次收到ack之后，调整为 rtt * 0.6 + minrtt * 0.2 + maxrtt * 0.2
 	rto time.Duration
 
-	// rtt采样，微妙级别
+	// rtt采样，用于动态调整rto
+	// 微妙级别
 	rtt    int64
 	minrtt int64
 	maxrtt int64
@@ -75,28 +94,62 @@ type Sw struct {
 	timer *time.Timer
 }
 
-func NewSw(conn *net.UDPConn) *Sw {
+func NewSw(conn *net.UDPConn, deliveryFunc func([]byte, *net.UDPAddr)) *Sw {
 	sw := &Sw{
-		conn:     conn,
-		rcvbuf:   list.New(),
-		recvAck:  make(chan struct{}),
-		recvPush: make(chan struct{}),
-		timer:    time.NewTimer(defaultRto),
-		mss:      1400,
-		rto:      defaultRto,
-		lastSeq:  0,
-		sndSeq:   1,
-		rtt:      0,
-		minrtt:   math.MaxInt64,
-		maxrtt:   math.MinInt64,
+		conn:         conn,
+		sndbuf:       make(chan *writeReq),
+		rcvbuf:       list.New(),
+		rcvPushEvent: make(chan struct{}),
+		deliveryFunc: deliveryFunc,
+		recvAck:      make(chan *ackReq),
+		timer:        time.NewTimer(defaultRto),
+		mss:          1400,
+		rto:          defaultRto,
+		latestSeq:    0,
+		sndSeq:       1,
+		rtt:          0,
+		minrtt:       math.MaxInt64,
+		maxrtt:       math.MinInt64,
 	}
 	go sw.read()
+	go sw.sendFragment()
 	return sw
 }
 
-func (sw *Sw) Peek() ([]byte, *net.UDPAddr, error) {
+// 阻塞式读
+// 如果当前缓冲区没有数据包，阻塞
+// 如果有数据包，返回一个segment
+func (sw *Sw) RecvFrom() ([]byte, *net.UDPAddr, error) {
 	sw.rcvMu.Lock()
+	if sw.rcvbuf.Len() > 0 {
+		ele := sw.rcvbuf.Front()
+		seg := ele.Value.(segment)
+		sw.rcvbuf.Remove(ele)
+		sw.rcvMu.Unlock()
+		return seg.data, seg.raddr, nil
+	}
+	sw.rcvMu.Unlock()
 
+	<-sw.rcvPushEvent
+	sw.rcvMu.Lock()
+	if sw.rcvbuf.Len() > 0 {
+		ele := sw.rcvbuf.Front()
+		seg := ele.Value.(segment)
+		sw.rcvbuf.Remove(ele)
+		sw.rcvMu.Unlock()
+		return seg.data, seg.raddr, nil
+	}
+	sw.rcvMu.Unlock()
+
+	return nil, nil, errAgain
+}
+
+// 非阻塞式读
+// 如果当前缓冲区没有数据包，返回EAGAIN
+// 如果有数据包，返回一个segment
+func (sw *Sw) RecvFromNonBlock() ([]byte, *net.UDPAddr, error) {
+	sw.rcvMu.Lock()
+	fmt.Println(sw.rcvbuf.Len())
 	if sw.rcvbuf.Len() > 0 {
 		ele := sw.rcvbuf.Front()
 		seg := ele.Value.(segment)
@@ -109,6 +162,9 @@ func (sw *Sw) Peek() ([]byte, *net.UDPAddr, error) {
 }
 
 func (sw *Sw) Send(data []byte, raddr *net.UDPAddr) {
+	sw.sndMu.Lock()
+	defer sw.sndMu.Unlock()
+
 	// 分片
 	if len(data) > sw.mss {
 		log.Println("[D] fragment")
@@ -117,57 +173,86 @@ func (sw *Sw) Send(data []byte, raddr *net.UDPAddr) {
 			if pos > len(data) {
 				pos = len(data)
 			}
-			sw.sendFragment(data[c:pos], raddr)
-			c = pos
+
+			seg := segment{
+				cmd:   cmdPush,
+				seq:   sw.sndSeq,
+				data:  data[c:pos],
+				raddr: raddr,
+			}
+
+			req := &writeReq{
+				seg: seg,
+				fin: make(chan struct{}),
+			}
+
+			sw.sndbuf <- req
+			<-req.fin
 		}
 	} else {
-		sw.sendFragment(data, raddr)
+		seg := segment{
+			cmd:   cmdPush,
+			seq:   sw.sndSeq,
+			data:  data,
+			raddr: raddr,
+		}
+		req := &writeReq{
+			seg: seg,
+			fin: make(chan struct{}),
+		}
+
+		sw.sndbuf <- req
+		<-req.fin
 	}
+
 }
 
-func (sw *Sw) sendFragment(data []byte, raddr *net.UDPAddr) {
-	log.Printf("[D]send fragment: %d\n", sw.sndSeq)
-	seg := segment{
-		cmd:   cmdPush,
-		seq:   sw.sndSeq,
-		data:  data,
-		raddr: raddr,
-	}
-	sw.tx(seg)
+func (sw *Sw) sendFragment() {
+	for req := range sw.sndbuf {
+		log.Printf("[D]send fragment: %d, size: %d\n", sw.sndSeq, len(req.seg.data))
+		sw.tx(req.seg)
 
-	beg := time.Now()
-	sw.timer.Reset(sw.rto)
-	for {
-		select {
-		// 死等ack
-		case <-sw.recvAck:
-			log.Printf("[D]receive ack for segment: %d\n", sw.sndSeq)
-			rtt := time.Now().Sub(beg).Microseconds()
-			sw.rtt = rtt
-			if rtt < sw.minrtt {
-				sw.minrtt = rtt
+		beg := time.Now()
+		sw.timer.Reset(sw.rto)
+		for {
+			select {
+			// 死等ack
+			case ack := <-sw.recvAck:
+				log.Printf("[D] receive ack for segment: %d\n", sw.sndSeq)
+				atomic.AddUint32(&sw.sndSeq, 1)
+
+				rtt := time.Now().Sub(beg).Microseconds()
+				sw.rtt = rtt
+				if rtt < sw.minrtt {
+					sw.minrtt = rtt
+				}
+
+				if rtt > sw.maxrtt {
+					sw.maxrtt = rtt
+				}
+
+				// sw.rto = time.Duration(
+				// 	int64(float64(sw.rtt)*0.4+
+				// 		float64(sw.minrtt)*0.2+
+				// 		float64(sw.maxrtt)*0.4)) * time.Microsecond
+
+				log.Printf("[D] rtt %d minrtt: %d maxrtt: %d, rto: %d\n",
+					sw.rtt, sw.minrtt, sw.maxrtt, sw.rto.Microseconds())
+
+				sw.timer.Stop()
+				close(ack.fin)
+				goto fin
+
+			// 超时重传
+			case <-sw.timer.C:
+				log.Printf("[D] segment %d timeout, resending\n", sw.sndSeq)
+				sw.tx(req.seg)
+				sw.timer.Reset(sw.rto)
+				log.Println("[D] resend segment ", req.seg.seq)
 			}
-
-			if rtt > sw.maxrtt {
-				sw.maxrtt = rtt
-			}
-
-			sw.rto = time.Duration(int64(float64(sw.rtt)*0.6+float64(sw.minrtt)*0.2+float64(sw.maxrtt)*0.2)) * time.Microsecond
-
-			log.Printf("[D] rtt %d minrtt: %d maxrtt: %d, rto: %d\n",
-				sw.rtt, sw.minrtt, sw.maxrtt, sw.rto.Microseconds())
-
-			sw.timer.Stop()
-			atomic.AddUint32(&sw.sndSeq, 1)
-			return
-
-		// 超时重传
-		case <-sw.timer.C:
-			log.Printf("[D] segment %d timeout, resending\n", sw.sndSeq)
-			sw.tx(seg)
-			sw.timer.Reset(defaultRto)
-			log.Println("resend ", seg.seq)
 		}
+	fin:
+		close(req.fin)
 	}
 }
 
@@ -182,8 +267,9 @@ func (sw *Sw) read() error {
 		// ack包
 		if seg.cmd == cmdAck {
 			// 失序包，在sw协议中基本不会发生失序包
-			if seg.seq > sw.lastSeq+1 {
-				log.Printf("[FATAL] unorder pkt, curseq %d, ack seq %d\n", sw.sndSeq, seg.seq)
+			if seg.seq > sw.sndSeq {
+				log.Printf("[FATAL] unorder pkt, curseq %d, ack seq %d\n",
+					sw.sndSeq, seg.seq)
 				continue
 			}
 
@@ -195,24 +281,42 @@ func (sw *Sw) read() error {
 				continue
 			}
 
-			// 收到ack
-			// ack可以是首次ack
-			// 也可能是由于重传造成的重复ack
-			// 这两种情况都需要重置计时器
-			select {
-			case sw.recvAck <- struct{}{}:
-			default:
+			req := &ackReq{
+				seg: seg,
+				fin: make(chan struct{}),
 			}
+			sw.recvAck <- req
+			<-req.fin
 		}
 
 		// 数据包
 		if seg.cmd == cmdPush {
 			// 失序包，在sw协议中基本不会发生失序包
-			if seg.seq > sw.lastSeq+1 || seg.seq < sw.lastSeq {
-				log.Printf("[FATAL] unorder pkt, expectSeq %d, pkt seq %d\n", sw.lastSeq, seg.seq)
+			if seg.seq > sw.latestSeq+1 || seg.seq < sw.latestSeq {
+				log.Printf("[FATAL] unorder pkt, expectSeq %d, pkt seq %d\n",
+					sw.latestSeq, seg.seq)
 				continue
 			}
 
+			// 重复包
+			// 由于不针对ack进行超时重传机制
+			// 当ack丢包时，对方会继续重传，造成重复包
+			// 如果不再进行确认，对方可能会一直重传
+			if seg.seq == sw.latestSeq {
+				log.Printf("[D] duplicate segment %d\n", seg.seq)
+				// ack
+				sw.tx(segment{
+					cmd:   cmdAck,
+					seq:   seg.seq,
+					raddr: seg.raddr,
+				})
+
+				continue
+			}
+
+			sw.rcvMu.Lock()
+			sw.rcvbuf.PushBack(seg)
+			sw.rcvMu.Unlock()
 			// ack
 			sw.tx(segment{
 				cmd:   cmdAck,
@@ -220,26 +324,12 @@ func (sw *Sw) read() error {
 				raddr: seg.raddr,
 			})
 
-			// 重复包
-			// 由于不针对ack进行超时重传机制
-			// 当ack丢包时，对方会继续重传，造成重复包
-			// 如果不再进行确认，对方会一直重传
-			if seg.seq == sw.lastSeq {
-				log.Printf("[D] duplicate segment %d\n", seg.seq)
-				continue
-			}
-
-			sw.rcvMu.Lock()
-			sw.rcvbuf.PushBack(seg)
-			sw.rcvMu.Unlock()
-
-			// 投递到上层
 			select {
-			case sw.recvPush <- struct{}{}:
+			case sw.rcvPushEvent <- struct{}{}:
 			default:
 			}
-
-			sw.lastSeq = seg.seq
+			log.Printf("[D] receive packet %d, size %d, %s\n", seg.seq, len(seg.data), string(seg.data))
+			sw.latestSeq = seg.seq
 		}
 	}
 }
