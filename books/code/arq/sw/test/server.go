@@ -32,12 +32,15 @@ func (s *server) listenAndServe() {
 
 	s.sws = sws
 
+	// 读udp数据
+	// 通过sws.Input输入sw协议解码
+	// 通过sws.RecvFrom读取解码后的数据
 	go func() {
 		buf := make([]byte, 2048)
 		for {
 			nr, raddr, err := lis.ReadFromUDP(buf)
 			if err != nil {
-				fmt.Println(err)
+				fmt.Println("read from udp:", err)
 				break
 			}
 
@@ -54,24 +57,27 @@ func (s *server) listenAndServe() {
 		}
 	}()
 
-	for {
-		buf, err := sws.RecvFrom()
-		if err != nil {
-			fmt.Println(err)
-			continue
+	// 读
+	go func() {
+		for {
+			buf, err := sws.RecvFrom()
+			if err != nil {
+				fmt.Println(err)
+				continue
+			}
+
+			fmt.Println("server recv from: ", string(buf))
+
+			// 回显
+			sws.SendTo(buf)
 		}
+	}()
 
-		fmt.Println("server recv from: ", string(buf))
-		sws.Output(buf)
-	}
-}
-
-func (s *server) read(buf []byte) {
+	select {}
 }
 
 func main() {
 	log.SetFlags(log.LstdFlags | log.Ltime | log.Lshortfile | log.Lmicroseconds)
 	s := &server{}
 	s.listenAndServe()
-	select {}
 }

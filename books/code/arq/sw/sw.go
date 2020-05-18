@@ -105,7 +105,7 @@ func NewSw(output func([]byte)) *Sw {
 // 上层把要发送的数据准备好之后，调用此函数
 // output对数据包进行sw编码，编码成功之后
 // 调用sw.output回调函数发送数据
-func (sw *Sw) Output(data []byte) {
+func (sw *Sw) SendTo(data []byte) {
 	// 分片
 	if len(data) > sw.mss {
 		log.Println("[D] fragment")

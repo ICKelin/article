@@ -30,9 +30,10 @@ func main() {
 
 		})
 
+	// 写
 	go func() {
 		c := 0
-		tick := time.NewTimer(time.Second * 30)
+		tick := time.NewTimer(time.Second * 10)
 		for {
 			select {
 			case <-tick.C:
@@ -43,10 +44,25 @@ func main() {
 			s := fmt.Sprintf("hello %d", c+1)
 			c += 1
 			fmt.Println("send ", s)
-			swc.Output([]byte(s))
+			swc.SendTo([]byte(s))
 		}
 	}()
 
+	// 读
+	go func() {
+		for {
+			buf, err := swc.RecvFrom()
+			if err != nil {
+				fmt.Println(err)
+				continue
+			}
+			fmt.Println("recv ", string(buf))
+		}
+	}()
+
+	// udp读包
+	// 输入sw.Input进行协议解码
+	// 通过swc.RecvFrom读取解码之后的缓冲区数据
 	go func() {
 		buf := make([]byte, 2048)
 		for {
@@ -62,13 +78,6 @@ func main() {
 	}()
 
 	go swc.Stat()
-	for {
-		buf, err := swc.RecvFrom()
-		if err != nil {
-			fmt.Println(err)
-			continue
-		}
-		fmt.Println("recv ", string(buf))
-	}
+
 	select {}
 }
