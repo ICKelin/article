@@ -18,6 +18,7 @@
    - [传输层: kcp和tcp协议](books/network/kcp.md)
 
 - [实时推送系列文章](./books/push)
+   - [记一次生产推送故障排查](books/push/markdown/prdfatal.md)
    - [基于grpc的推送](books/push/markdown/grpc.md)
    - [基于websocket的推送](books/push/markdown/websocket.md)
    - [基于mqtt协议的推送(未完)](books/push/markdown/mqtt.md)
