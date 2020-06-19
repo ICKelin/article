@@ -14,6 +14,7 @@
    - [传输层: 可靠性协议原理](books/network/rdt.md)
    - [传输层: tcp可靠性传输](books/network/tcp_rdt.md)
    - [传输层: tcp拥塞控制](books/network/tcp_congssion.md)
+   - [传输层: 由于死锁导致的tcp握手失败](books/network/tcp_handshake.md)
    - [传输层: 从tcp的角度分析tcp over tcp问题](books/network/tcp_tcp.md)
    - [传输层: kcp和tcp协议](books/network/kcp.md)
 
