@@ -9,7 +9,7 @@ flannel 的udp模式是flannel最古老的一种方式，属于隧道技术的�
 
 ![tun](images/tun-docker.jpg)
 
-flanneld会通过subnet模块监听到子网变化，在handleSubnetEvent当中，会执行路由操作，flannel的所有模式都是依赖路由的，路由和隧道并不冲突，隧道只是说宿主机与宿主机之间通过隧道封装进行通信，但是在宿主机内部，还是需要通过路由让数据包从tun设备发出，从而在应用程序当中能够读取到这一ip包。
+flanneld会通过subnet模块监听到子网变化，在handleSubnetEvent当中，会执行路由操作，将路由信息加入内存路由表当中，当收到数据包时，查询内存的路由表，找到下一跳的ip地址和udp端口
 
 ### 源码分析
 flannel的udp模式隧道和路由部分的代码采用的是c语言编写，c语言和go语言之间通过unix socket进行通信，实际上这部分代码用go语言也能够实现，但是可能由于历史原因，作者也懒得改了，所以一直沿用c语言的代码，但是这样就需要编译时只能在linux环境下编译，在mac上进行交叉编译会缺少linux头文件。
@@ -35,9 +35,9 @@ udp_amd64.go和udp_network_amd64.go主要实现两个功能，一个是网络注
 
 ![flannel-udp](images/flannel-udp.jpg)
 
-### 路由设置、查找
+### 路由添加，删除、查找
 
-**路由设置**
+**路由添加、删除s**
 ```
 struct ip_net {
 	in_addr_t ip;
@@ -49,8 +49,50 @@ struct route_entry {
 	struct sockaddr_in next_hop;
 };
 
+
+static int set_route(struct ip_net dst, struct sockaddr_in *next_hop) {
+	size_t i;
+
+	for( i = 0; i < routes_cnt; i++ ) {
+		if( dst.ip == routes[i].dst.ip && dst.mask == routes[i].dst.mask ) {
+			routes[i].next_hop = *next_hop;
+			return 0;
+		}
+	}
+
+	if( routes_alloc == routes_cnt ) {
+		int new_alloc = (routes_alloc ? 2*routes_alloc : 8);
+		struct route_entry *new_routes = (struct route_entry *) realloc(routes, new_alloc*sizeof(struct route_entry));
+		if( !new_routes )
+			return ENOMEM;
+
+		routes = new_routes;
+		routes_alloc = new_alloc;
+	}
+
+	routes[routes_cnt].dst = dst;
+	routes[routes_cnt].next_hop = *next_hop;
+	routes_cnt++;
+
+	return 0;
+}
+
+static int del_route(struct ip_net dst) {
+	size_t i;
+
+	for( i = 0; i < routes_cnt; i++ ) {
+		if( dst.ip == routes[i].dst.ip && dst.mask == routes[i].dst.mask ) {
+			routes[i] = routes[routes_cnt-1];
+			routes_cnt--;
+			return 0;
+		}
+	}
+
+	return ENOENT;
+}
+
 ```
-udp模式的路由相比较linux系统的静态路由而言要简单的多，flannel在内存当中保存一个路由表项。next_hop是个地址，也即是对端udp模式监听的ip地址和端口。当收到tun网卡的ip包时，首先从路由表数组当中查询下一跳，获取其监听的udp端口和IP地址。然后通过udp发送该数据包出去。
+flannel的系统路由只有一条，将networkConfig的ip地址段加到系统路由当中，系统路由的目的是为了tun网卡能够读到数据包，除了系统路由外，flannel在内存当中维护一个路由表，内存路由表的目的是在收到数据包时，知道往哪个ip和udp端口发送。
 
 **路由查找**
 ```
