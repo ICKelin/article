@@ -37,6 +37,9 @@
    - [传输层: 从tcp的角度分析tcp over tcp问题](books/network/tcp_tcp.md)
    - [传输层: kcp和tcp协议](books/network/kcp.md)
 
+- [Redis学习笔记](系列文章/contents)
+   - [redis学习笔记: 基本数据结构sd]((系列文章/redis/redis学习笔记-基本数据结构sds.md))
+
 - [实时推送系列文章](./books/push)
    - [记一次生产推送故障排查](books/push/markdown/prdfatal.md)
    - [基于grpc的推送](books/push/markdown/grpc.md)
