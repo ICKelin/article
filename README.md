@@ -1,5 +1,13 @@
-### 文章列表
+## 文章索引
 
+- [docker&k8s网络系列](#docker&k8s网络)：docker和k8s以及cni插件的一些网络原理
+- [计算机网络基础知识](#网络基础知识)：TCP/IP协议栈各层的一些学习记录
+- [基础组件](#基础组件): Redis/kafka等基础组件的使用与学习
+- [消息推送与IM等技术](#消息推送与IM)：长连接推送等实现技术以及优化
+- [编程语言](#编程语言)：golang踩过的一些坑以及部分数据结构实现
+
+
+## 文章列表
 - [docker&k8s网络](系列文章/docker/content.md)
    - [docker网络: network namespace](系列文章/docker/docker网络之namespace.md)      
    - [docker网络: veth设备](系列文章/docker/docker网络之veth设备.md)
@@ -19,7 +27,7 @@
    - [k8s网络: 使用gtun跨vpc访问集群](系列文章/docker/k8s网络_使用gtun跨vpc访问k8s集群.md)
    - [k8s网络: udp端口使用hostport遇到的坑](系列文章/docker/k8s网络_udp端口使用hostport遇到的坑.md)
 
-- [网络相关文章](./books/network)
+- [网络基础知识](./books/network)
    - [网络层: docker网络](books/network/docker.md)
    - [网络层: 网络加速器原理](https://github.com/ICKelin/article/issues/1)
    - [网络层: iptables mangle + 策略路由进行分流](https://github.com/ICKelin/article/issues/2)
@@ -37,10 +45,10 @@
    - [传输层: 从tcp的角度分析tcp over tcp问题](books/network/tcp_tcp.md)
    - [传输层: kcp和tcp协议](books/network/kcp.md)
 
-- [Redis学习笔记](系列文章/contents)
-   - [redis学习笔记: 基本数据结构sds](系列文章/redis/redis学习笔记-基本数据结构sds.md)
+- [基础组件](系列文章/contents)
+   - [redis学习笔记: 基本数据结构sds](系列文章/influstrature/redis学习笔记-基本数据结构sds.md)
 
-- [实时推送系列文章](./books/push)
+- [消息推送与IM](./books/push)
    - [记一次生产推送故障排查](books/push/markdown/prdfatal.md)
    - [基于grpc的推送](books/push/markdown/grpc.md)
    - [基于websocket的推送](books/push/markdown/websocket.md)
