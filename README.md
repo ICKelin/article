@@ -54,7 +54,7 @@
 
 - [基础组件](系列文章/contents)
    - [redis学习笔记: 基本数据结构sds](系列文章/influstrature/redis学习笔记-基本数据结构sds.md)
-   - [redis学习笔记: 基本数据结构sds](系列文章/influstrature/redis学习笔记-基本数据结构ziplist.md)
+   - [redis学习笔记: 基本数据结构ziplist](系列文章/influstrature/redis学习笔记-基本数据结构ziplist.md)
 
 <div id="消息推送与IM"></div>
 
