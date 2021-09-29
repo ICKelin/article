@@ -33,7 +33,7 @@
 <div id="网络基础知识"></div>
 
 - [网络基础知识](./books/network)
-   - [网络层: docker网络](books/network/docker.md)
+   - [网络层: docker网络](系列文章/network/网络层-docker网络.md)
    - [网络层: 网络加速器原理](https://github.com/ICKelin/article/issues/1)
    - [网络层: iptables mangle + 策略路由进行分流](https://github.com/ICKelin/article/issues/2)
    - [网络层: 连接跟踪的一种内核传递方案](https://github.com/ICKelin/article/issues/5)
@@ -43,12 +43,12 @@
    - [应用层: 一个非常简洁的内网穿透实现](https://github.com/ICKelin/article/issues/10)
    - [应用层: DNS原理与动态DNS](https://github.com/ICKelin/article/issues/11)
    - [应用层: 基于CoreDNS和etcd实现动态域名解析](https://github.com/ICKelin/article/issues/20)
-   - [传输层: 可靠性协议原理](books/network/rdt.md)
-   - [传输层: tcp可靠性传输](books/network/tcp_rdt.md)
-   - [传输层: tcp拥塞控制](books/network/tcp_congssion.md)
-   - [传输层: 由于死锁导致的tcp握手失败](books/network/tcp_handshake.md)
-   - [传输层: 从tcp的角度分析tcp over tcp问题](books/network/tcp_tcp.md)
-   - [传输层: kcp和tcp协议](books/network/kcp.md)
+   - [传输层: 可靠性协议原理](系列文章/network/传输层-可靠性传输.md)
+   - [传输层: tcp可靠性传输](系列文章/network/传输层-tcp可靠性实现.md)
+   - [传输层: tcp拥塞控制](系列文章/network/传输层-tcp拥塞控制.md)
+   - [传输层: 由于死锁导致的tcp握手失败](系列文章/network/传输层-tcp三次握手失败定位.md)
+   - [传输层: 从tcp的角度分析tcp over tcp问题](系列文章/network/传输层-tcp_over_tcp.md)
+   - [传输层: kcp和tcp协议](系列文章/network/传输层-kcp协议介绍.md)
 
 <div id="基础组件"></div>
 
@@ -59,17 +59,17 @@
 <div id="消息推送与IM"></div>
 
 - [消息推送与IM](./books/push)
-   - [记一次生产推送故障排查](books/push/markdown/prdfatal.md)
-   - [基于grpc的推送](books/push/markdown/grpc.md)
-   - [基于websocket的推送](books/push/markdown/websocket.md)
-   - [基于mqtt协议的推送(未完)](books/push/markdown/mqtt.md)
-   - [测试与对比(未完)](books/push/markdown/bench.md)
+   - [记一次生产推送故障排查](系列文章/push/markdown/prdfatal.md)
+   - [基于grpc的推送](系列文章/push/markdown/grpc.md)
+   - [基于websocket的推送](系列文章/push/markdown/websocket.md)
+   - [基于mqtt协议的推送(未完)](系列文章/push/markdown/mqtt.md)
+   - [测试与对比(未完)](系列文章/push/markdown/bench.md)
 
 <div id="编程语言"></div>
 
 - [编程语言]()
-   - [go语言常见的panic方式](golang/panic.md)
-   - [go slice](golang/slice.md)
+   - [go语言常见的panic方式](系列文章/golang/panic.md)
+   - [go slice](系列文章/golang/slice.md)
    - [一个c实现的channel分析](https://github.com/ICKelin/article/issues/17)
 
 - [其他]()
