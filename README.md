@@ -100,7 +100,7 @@
 
 - [产品与解决方案]()
    - [Notr用户数量破百](https://github.com/ICKelin/article/issues/19)
-   - [全球IP加速GIPA](系列文章/products/产品与解决方案-全球IP加速GIPA.md)
+   - [全球IP加速](系列文章/products/产品与解决方案-全球IP加速GIPA.md)
 
 更多相关文章，可以关注我的个人公众号
 
