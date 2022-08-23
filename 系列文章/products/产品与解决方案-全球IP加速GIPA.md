@@ -35,3 +35,11 @@
 ## 现状以及未来
 产品推出之后陆续有网友联系到我了解情况，最终也有落地一些需求，主要是以个人居多，不过我们还是保持个人用户免费，企业用户收费的策略，未来会更多的在游戏，即时通讯等领域寻找更多的客户，打磨出一套精品解决方案。
 
+如果您对我们的全球IP加速产品感兴趣，可以阅读下面文档了解更多：
+
+- [产品控制台](https://dash.beyondnetwork.net)
+- [产品介绍](https://doc.beyondnetwork.net/#/gipa/introduce)
+- [专线覆盖](https://doc.beyondnetwork.net/#/gipa/backbone)
+- [使用指南](https://doc.beyondnetwork.net/#/gipa/quickstart)
+- [最佳实践](https://doc.beyondnetwork.net/#/gipa/rdp)
+
