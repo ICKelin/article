@@ -34,8 +34,6 @@
    - [flannel原理: udp模式实现](系列文章/docker/flannel原理之udp模式.md)
    - [flannel原理: host-gw模式实现](系列文章/docker/flannel原理之host-gw模式.md)
    - [flannel原理: vxlan模式实现](系列文章/docker/flannel原理之vxlan模式.md)
-
-[comment]: <> (   - [flannel原理: wireguard模式实现]&#40;系列文章/docker/flannel原理之wireguard模式.md&#41;&#40;TODO&#41;)
    - [k8s网络: service](系列文章/docker/k8s_service网络.md)
    - [k8s网络: 使用gtun跨vpc访问集群](系列文章/docker/k8s网络_使用gtun跨vpc访问k8s集群.md)
    - [k8s网络: udp端口使用hostport遇到的坑](系列文章/docker/k8s网络_udp端口使用hostport遇到的坑.md)
