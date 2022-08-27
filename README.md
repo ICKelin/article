@@ -1,13 +1,22 @@
 ## 文章分类
 
+- [产品与解决方案](#产品与解决方案)：在做的一些产品
 - [docker&k8s网络系列](#docker&k8s网络)：docker和k8s以及cni插件的一些网络原理
 - [计算机网络基础知识](#网络基础知识)：TCP/IP协议栈各层的一些学习记录
 - [基础组件](#基础组件): Redis/kafka等基础组件的使用与学习
 - [消息推送与IM等技术](#消息推送与IM)：长连接推送等实现技术以及优化
 - [编程语言](#编程语言)：golang踩过的一些坑以及部分数据结构实现
-- [产品与解决方案](#产品与解决方案)：在做的一些产品
 
 ## 文章列表
+
+<div id="产品与解决方案"></div>
+
+- [产品与解决方案]()
+  - [全球IP加速](系列文章/products/产品与解决方案-全球IP加速GIPA.md)
+  - [内网安全网关](系列文章/products/产品与解决方案-内网安全网关gla.md)
+  - [连接公有云VPC内网](系列文章/products/产品与解决方案-连接公有云内网.md)
+
+
 <div id="docker&k8s网络系列"></div>
 
 - [docker&k8s网络](系列文章/docker/content.md)
@@ -88,6 +97,7 @@
    - [基于websocket的推送](系列文章/push/markdown/websocket.md)
    - [基于mqtt协议的推送(未完)](系列文章/push/markdown/mqtt.md)
    - [测试与对比(未完)](系列文章/push/markdown/bench.md)
+   - [长连接的应用场景](系列文章/push/markdown/keepalive.md)
 
 <div id="编程语言"></div>
 
@@ -95,13 +105,6 @@
    - [go语言常见的panic方式](系列文章/golang/panic.md)
    - [go slice](系列文章/golang/slice.md)
    - [一个c实现的channel分析](https://github.com/ICKelin/article/issues/17)
-
-<div id="产品与解决方案"></div>
-
-- [产品与解决方案]()
-   - [全球IP加速](系列文章/products/产品与解决方案-全球IP加速GIPA.md)
-   - [内网安全网关](系列文章/products/产品与解决方案-内网安全网关gla.md)
-   - [连接公有云VPC内网](系列文章/products/产品与解决方案-连接公有云内网.md)
 
 更多相关文章，可以关注我的个人公众号
 
