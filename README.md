@@ -19,6 +19,7 @@
   - [内网安全网关产品介绍](https://www.beyondnetwork.net/gla-introduce.pdf)
   - [连接公有云VPC内网](系列文章/products/产品与解决方案-连接公有云内网.md)
   - [远程办公](系列文章/products/产品与解决方案-远程办公.md)
+  - [内网安全网关在远程办公的应用](https://www.beyondnetwork.net/gla-remotework.pdf)
 
 <div id="docker&k8s网络系列"></div>
 
