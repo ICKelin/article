@@ -15,6 +15,7 @@
   - [全球IP加速](系列文章/products/产品与解决方案-全球IP加速GIPA.md)
   - [全球IP加速产品介绍](https://www.beyondnetwork.net/gipa-introduce.pdf)
   - [全球IP加速在游戏中的应用](http://www.beyondnetwork.net/gipa-game.pdf)
+  - [全球ip加速在跨境电商中的应用](系列文章/products/产品与解决方案-全球ip加速在跨境电商中的应用.md)
   - [内网安全网关](系列文章/products/产品与解决方案-内网安全网关gla.md)
   - [内网安全网关产品介绍](https://www.beyondnetwork.net/gla-introduce.pdf)
   - [连接公有云VPC内网](系列文章/products/产品与解决方案-连接公有云内网.md)
