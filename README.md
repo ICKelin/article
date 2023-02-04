@@ -12,7 +12,7 @@
 <div id="产品与解决方案"></div>
 
 - [产品与解决方案]()
-  - [产品理念](系列文章/products/principle.md)
+  - [产品理念](系列文章/products/printciple.md)
   - [全球IP加速：产品背景](系列文章/products/产品与解决方案-全球IP加速GIPA.md)
   - [全球IP加速：产品介绍.pdf](https://www.beyondnetwork.net/gipa-introduce.pdf)
   - [全球ip加速：跨境电商中的应用](系列文章/products/产品与解决方案-全球ip加速在跨境电商中的应用.md)
