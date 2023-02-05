@@ -19,6 +19,7 @@
   - [全球ip加速：跨境电商客户案例分享](系列文章/products/产品与解决方案-全球ip加速在跨境电商中的案例.md)
   - [全球ip加速：游戏中的应用.pdf](http://www.beyondnetwork.net/gipa-game.pdf)
   - [全球ip加速：多线路竞速与故障切换](系列文章/products/产品与解决方案-全球IP加速容灾与故障切换.md)
+  - [全球ip加速：tiktok直播加速](系列文章/products/产品与解决方案-全球ip加速tiktok直播.md)
   - 全球ip加速：给远程桌面提提速
   - 全球ip加速：独立部署与私有化部署
   - SD-WAN组网：产品背景
