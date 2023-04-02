@@ -20,7 +20,6 @@
   - [全球ip加速：tiktok直播加速](系列文章/products/产品与解决方案-全球ip加速tiktok直播.md)
   - [全球ip加速：SaaS应用加速](系列文章/products/产品与解决方案-全球ip加速SaaS应用.md)
   - [全球ip加速：多线路竞速与故障切换](系列文章/products/产品与解决方案-全球IP加速容灾与故障切换.md)
-  - 全球ip加速：独立部署与私有化部署
   - [SD-WAN组网：产品介绍](系列文章/products/sd-wan产品介绍.md)
   - [SD-WAN组网：保姆级教程——如何做跨云组网](系列文章/products/保姆级教程——如何做跨云组网.md)
   - [SD-WAN组网：保姆级教程——如何实现企业分支互联](系列文章/products/保姆级教程——如何实现企业分支互联.md)
@@ -31,8 +30,6 @@
   - [零信任网关：远程办公](系列文章/products/产品与解决方案-远程办公.md)
   - [零信任网关：远程办公的应用.pdf](https://www.beyondnetwork.net/gla-remotework.pdf)
   - [零信任网关：访问内网NAS](系列文章/products/产品与解决方案-访问内网NAS.md)
-  - 产品组合方案：全球IP加速给SD-WAN提速
-  - 产品组合方案：全球IP加速给内网安全网关提速
 
 <div id="docker&k8s网络系列"></div>
 
