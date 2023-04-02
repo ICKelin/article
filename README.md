@@ -24,7 +24,7 @@
   - [SD-WAN组网：产品介绍](系列文章/products/sd-wan产品介绍.md)
   - [SD-WAN组网：保姆级教程——如何做跨云组网](系列文章/products/保姆级教程——如何做跨云组网.md)
   - [SD-WAN组网：保姆级教程——如何实现企业分支互联](系列文章/products/保姆级教程——如何实现企业分支互联.md)
-  - [SD-WAN组网：保姆级教程——保姆级教程——如何实现内网NAS访问](系列文章/products/保姆级教程——如何实现内网NAS访问.md)
+  - [SD-WAN组网：保姆级教程——如何实现内网NAS访问](系列文章/products/保姆级教程——如何实现内网NAS访问.md)
   - [零信任网关：产品背景](系列文章/products/产品与解决方案-内网安全网关gla.md)
   - [零信任网关：产品介绍.pdf](https://www.beyondnetwork.net/gla-introduce.pdf)
   - [零信任网关：连接公有云VPC内网](系列文章/products/产品与解决方案-连接公有云内网.md)
