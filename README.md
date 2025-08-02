@@ -1,7 +1,6 @@
 
 ## 文章分类
 
-- [产品与解决方案](#产品与解决方案)：在做的一些产品
 - [docker&k8s网络系列](#docker&k8s网络)：docker和k8s以及cni插件的一些网络原理
 - [计算机网络基础知识](#网络基础知识)：TCP/IP协议栈各层的一些学习记录
 - [基础组件](#基础组件): Redis/kafka等基础组件的使用与学习
@@ -9,31 +8,6 @@
 - [编程语言](#编程语言)：golang踩过的一些坑以及部分数据结构实现
 
 ## 文章列表
-
-<div id="产品与解决方案"></div>
-
-- [产品与解决方案]()
-  - [产品理念](系列文章/products/printciple.md)
-  - [比扬云产品与服务介绍](系列文章/products/产品与解决方案-产品与服务介绍.md)
-  - [全球加速：产品背景](系列文章/products/产品与解决方案-全球IP加速GIPA.md)
-  - [全球加速：产品介绍.pdf](https://www.beyondnetwork.net/gipa-introduce.pdf)
-  - [全球加速：跨境电商加速](系列文章/products/产品与解决方案-全球ip加速在跨境电商中的应用.md)
-  - [全球加速：游戏加速.pdf](http://www.beyondnetwork.net/gipa-game.pdf)
-  - [全球加速：tiktok直播加速](系列文章/products/产品与解决方案-全球ip加速tiktok直播.md)
-  - [全球加速：SaaS应用加速](系列文章/products/产品与解决方案-全球ip加速SaaS应用.md)
-  - [全球加速：多线路竞速与故障切换](系列文章/products/产品与解决方案-全球IP加速容灾与故障切换.md)
-  - [SD-WAN网络平台：产品介绍](系列文章/products/sd-wan产品介绍.md) 
-  - [SD-WAN网络平台：保姆级教程——如何做跨云组网](系列文章/products/保姆级教程——如何做跨云组网.md) | [【视频】](https://www.bilibili.com/video/BV1KFg5eiEEE)
-  - [SD-WAN网络平台：保姆级教程——如何实现企业分支互联](系列文章/products/保姆级教程——如何实现企业分支互联.md) | [【视频】](https://www.bilibili.com/video/BV1MbhKeTEfi)
-  - [SD-WAN网络平台：保姆级教程——如何实现内网NAS访问](系列文章/products/保姆级教程——如何实现内网NAS访问.md)
-  - [SD-WAN网络平台：保姆级教程——如何实现企业网(员工，企业分支，公有云)](系列文章/products/保姆级教程——如何实现企业网(员工，企业分支，公有云).md) | [【视频】](https://www.bilibili.com/video/BV1yVv8euEWx)
-  - [零信任网关：产品背景](系列文章/products/产品与解决方案-内网安全网关gla.md)
-  - [零信任网关：产品介绍.pdf](https://www.beyondnetwork.net/gla-introduce.pdf)
-  - [零信任网关：连接公有云VPC内网](系列文章/products/产品与解决方案-连接公有云内网.md)
-  - [零信任网关：远程办公](系列文章/products/产品与解决方案-远程办公.md)
-  - [零信任网关：远程办公的应用.pdf](https://www.beyondnetwork.net/gla-remotework.pdf)
-  - [零信任网关：访问内网NAS](系列文章/products/产品与解决方案-访问内网NAS.md)
-  - [免费开源的tiktok加速解决方案](系列文章/products/tiktok_1.md)
 
 <div id="docker&k8s网络系列"></div>
 
